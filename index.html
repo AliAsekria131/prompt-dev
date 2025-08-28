@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Prompt Generation Tool</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Verdana, sans-serif;
+      }
+
+      body {
+        background-color: #f0f0f0;
+        color: #000;
+        line-height: 1.5;
+        padding: 0;
+        margin: 0;
+      }
+
+      .container {
+        width: 100%;
+        padding: 10px;
+      }
+
+      /* Header styles */
+      .header {
+        background-color: #316ac5;
+        color: white;
+        padding: 10px;
+        border-bottom: 2px solid #1e417b;
+      }
+
+      .header h1 {
+        font-size: 24px;
+        margin: 0;
+        padding: 5px 0;
+      }
+
+      /* Navigation bar */
+      .navbar {
+        background-color: #ddd;
+        border-bottom: 1px solid #aaa;
+        padding: 5px 10px;
+        margin-bottom: 15px;
+      }
+
+      .navbar a {
+        color: #316ac5;
+        text-decoration: none;
+        margin-right: 15px;
+        font-weight: bold;
+      }
+
+      .navbar a:hover {
+        text-decoration: underline;
+      }
+
+      /* Two-column layout */
+      .two-column {
+        display: flex;
+        width: 100%;
+        flex-wrap: wrap;
+      }
+
+      .column {
+        flex: 1;
+        min-width: 400px;
+        padding: 5px;
+      }
+
+      /* Section styles */
+      .section {
+        border: 1px solid #aaa;
+        background-color: #fff;
+        margin-bottom: 15px;
+      }
+
+      .section-title {
+        background-color: #ddd;
+        padding: 5px;
+        font-weight: bold;
+        border-bottom: 1px solid #aaa;
+      }
+
+      .section-content {
+        padding: 10px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 10px;
+      }
+
+      table td {
+        padding: 5px;
+        vertical-align: top;
+      }
+
+      table th {
+        background-color: #eee;
+        padding: 5px;
+        text-align: left;
+        border-bottom: 1px solid #aaa;
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        padding: 3px;
+        border: 1px solid #aaa;
+        font-family: Arial, sans-serif;
+      }
+
+      textarea {
+        height: 80px;
+      }
+
+      button {
+        background-color: #316ac5;
+        color: white;
+        border: 1px solid #1e417b;
+        padding: 5px 10px;
+        cursor: pointer;
+        font-weight: bold;
+      }
+
+      button:hover {
+        background-color: #1e417b;
+      }
+
+      .output-area {
+        border: 1px solid #aaa;
+        background-color: #fff;
+        padding: 10px;
+        margin-top: 15px;
+      }
+
+      .output-area textarea {
+        height: 150px;
+        font-family: "Courier New", monospace;
+      }
+
+      .test-block {
+        border: 1px solid #ccc;
+        margin-bottom: 15px;
+        padding: 10px;
+        background-color: #f9f9f9;
+      }
+
+      .test-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #316ac5;
+      }
+
+      .assert-section {
+        margin-top: 15px;
+        padding: 10px;
+        border: 1px solid #ddd;
+        background-color: #fff;
+      }
+
+      .assert-header {
+        font-weight: bold;
+        margin-bottom: 10px;
+        color: #666;
+      }
+
+      .assert-item {
+        margin-bottom: 10px;
+        padding: 5px;
+        border: 1px solid #eee;
+      }
+
+      .footer {
+        border-top: 1px solid #aaa;
+        padding: 10px;
+        text-align: center;
+        font-size: 12px;
+        color: #666;
+        margin-top: 20px;
+      }
+
+      /* Responsive design */
+      @media screen and (max-width: 900px) {
+        .column {
+          min-width: 100%;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>Prompt Generation Tool</h1>
+      </div>
+
+      <div class="navbar">
+        <a href="#">Home</a>
+        <a href="#">About</a>
+        <a href="#">Services</a>
+        <a href="#">Contact</a>
+        <a href="#">Help</a>
+      </div>
+
+      <div class="two-column">
+        <!-- Left Column -->
+        <div class="column">
+          <div class="section">
+            <div class="section-title">Description</div>
+            <div class="section-content">
+              <input
+                type="text"
+                id="description"
+                placeholder="Enter description"
+              />
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Prompts</div>
+            <div class="section-content" id="prompts-container">
+              <textarea
+                class="prompt-input"
+                placeholder="Enter prompt"
+              ></textarea>
+              <div style="margin-top: 10px">
+                <button onclick="addPrompt()">+ Add Another Prompt</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title">Actions</div>
+            <div class="section-content">
+              <button onclick="generateOutput()">Generate Output</button>
+              <button style="margin-left: 10px" onclick="saveConfig()">
+                Save Configuration
+              </button>
+              <button style="margin-left: 10px" onclick="loadConfig()">
+                Load Configuration
+              </button>
+              <button style="margin-left: 10px" onclick="resetForm()">
+                Reset Form
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="column">
+          <div class="section">
+            <div class="section-title">Tests</div>
+            <div class="section-content" id="tests-container">
+              <!-- Test blocks will be added here -->
+            </div>
+            <div class="section-content">
+              <button onclick="addTestBlock()">+ Add Test Block</button>
+            </div>
+          </div>
+
+          <div class="output-area">
+            <div class="section-title">Generated Output</div>
+            <textarea id="output" readonly></textarea>
+            <div style="margin-top: 10px">
+              <button onclick="copyToClipboard()">Copy to Clipboard</button>
+              <button style="margin-left: 10px" onclick="exportToFile()">
+                Export to File
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="footer">
+        <p>
+          Prompt Generation Tool v2.3.1 | © 2007 PromptDev Inc. | All rights
+          reserved
+        </p>
+        <p>Page generated on: <span id="current-date"></span></p>
+      </div>
+    </div>
+
+    <script>
+      // Set current date in footer
+      document.getElementById("current-date").textContent =
+        new Date().toLocaleString();
+
+      // Add new prompt textarea
+      function addPrompt() {
+        const container = document.getElementById("prompts-container");
+        const textarea = document.createElement("textarea");
+        textarea.className = "prompt-input";
+        textarea.placeholder = "Enter prompt";
+        container.insertBefore(textarea, container.lastElementChild);
+      }
+
+      // Add new test block
+      function addTestBlock() {
+        const container = document.getElementById("tests-container");
+        const testBlock = document.createElement("div");
+        testBlock.className = "test-block";
+        testBlock.innerHTML = `
+                <div class="test-header">Test Block</div>
+                <div class="vars-section">
+                    <table class="vars-table">
+                        <thead>
+                            <tr>
+                                <th>Variable</th>
+                                <th>Value</th>
+                                <th width="50">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><input type="text" class="var-name" placeholder="Variable name"></td>
+                                <td><input type="text" class="var-value" placeholder="Variable value"></td>
+                                <td><button onclick="removeVar(this)">X</button></td>
+                            </tr>
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3">
+                                    <button onclick="addVarToTest(this)">+ Add Variable</button>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+                <div class="assert-section">
+                    <div class="assert-header">Assert</div>
+                    <div class="assert-items">
+                        <div class="assert-item">
+                            <select class="assert-type">
+                                <option value="contains">contains</option>
+                                <option value="javascript">javascript</option>
+                                <option value="llm-rubric">llm-rubric</option>
+                                <option value="equals">equals</option>
+                                <option value="regex">regex</option>
+                            </select>
+                            <textarea class="assert-value" placeholder="Enter assert value"></textarea>
+                            <div style="margin-top: 5px;">
+                                <button onclick="removeAssert(this)" style="background-color: #cc0000; border-color: #990000;">Remove Assert</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <button onclick="addAssertToTest(this)">+ Add Assert</button>
+                    </div>
+                </div>
+                <div style="text-align: right; margin-top: 10px;">
+                    <button onclick="removeTestBlock(this)" style="background-color: #cc0000; border-color: #990000;">Remove Test Block</button>
+                </div>
+            `;
+        container.appendChild(testBlock);
+      }
+
+      // Add variable to specific test block
+      function addVarToTest(button) {
+        const table = button.closest(".vars-table");
+        const tbody = table.querySelector("tbody");
+        const row = document.createElement("tr");
+        row.innerHTML = `
+                <td><input type="text" class="var-name" placeholder="Variable name"></td>
+                <td><input type="text" class="var-value" placeholder="Variable value"></td>
+                <td><button onclick="removeVar(this)">X</button></td>
+            `;
+        tbody.appendChild(row);
+      }
+
+      // Remove variable row
+      function removeVar(button) {
+        const row = button.closest("tr");
+        const tbody = row.closest("tbody");
+        if (tbody.querySelectorAll("tr").length > 1) {
+          row.remove();
+        } else {
+          // Clear the inputs instead of removing the last row
+          row.querySelector(".var-name").value = "";
+          row.querySelector(".var-value").value = "";
+        }
+      }
+
+      // Add assert to specific test block
+      function addAssertToTest(button) {
+        const assertItems = button
+          .closest(".assert-section")
+          .querySelector(".assert-items");
+        const assertItem = document.createElement("div");
+        assertItem.className = "assert-item";
+        assertItem.innerHTML = `
+                <select class="assert-type">
+                    <option value="contains">contains</option>
+                    <option value="javascript">javascript</option>
+                    <option value="llm-rubric">llm-rubric</option>
+                    <option value="equals">equals</option>
+                    <option value="regex">regex</option>
+                </select>
+                <textarea class="assert-value" placeholder="Enter assert value"></textarea>
+                <div style="margin-top: 5px;">
+                    <button onclick="removeAssert(this)" style="background-color: #cc0000; border-color: #990000;">Remove Assert</button>
+                </div>
+            `;
+        assertItems.appendChild(assertItem);
+      }
+
+      // Remove assert item
+      function removeAssert(button) {
+        const assertItem = button.closest(".assert-item");
+        const assertItems = assertItem.closest(".assert-items");
+        if (assertItems.querySelectorAll(".assert-item").length > 1) {
+          assertItem.remove();
+        } else {
+          // Clear the inputs instead of removing the last item
+          assertItem.querySelector(".assert-type").value = "contains";
+          assertItem.querySelector(".assert-value").value = "";
+        }
+      }
+
+      // Remove entire test block
+      function removeTestBlock(button) {
+        const block = button.closest(".test-block");
+        block.remove();
+      }
+
+      // Generate YAML output
+      function generateOutput() {
+        const description = document.getElementById("description").value;
+        const prompts = Array.from(document.querySelectorAll(".prompt-input"))
+          .map((input) => input.value.trim())
+          .filter((value) => value !== "");
+
+        // Collect all test blocks
+        const testBlocks = [];
+        document.querySelectorAll(".test-block").forEach((block) => {
+          const vars = {};
+          block.querySelectorAll(".vars-table tbody tr").forEach((row) => {
+            const nameInput = row.querySelector(".var-name");
+            const valueInput = row.querySelector(".var-value");
+            if (nameInput && valueInput && nameInput.value.trim() !== "") {
+              vars[nameInput.value.trim()] = valueInput.value.trim();
+            }
+          });
+
+          const asserts = [];
+          block.querySelectorAll(".assert-item").forEach((item) => {
+            const typeSelect = item.querySelector(".assert-type");
+            const valueInput = item.querySelector(".assert-value");
+            if (
+              typeSelect &&
+              valueInput &&
+              (typeSelect.value.trim() !== "" || valueInput.value.trim() !== "")
+            ) {
+              asserts.push({
+                type: typeSelect.value,
+                value: valueInput.value.trim(),
+              });
+            }
+          });
+
+          testBlocks.push({ vars, asserts });
+        });
+
+        let yaml = "";
+        if (description) {
+          yaml += `description: "${description}"\n\n`;
+        } else {
+          yaml += 'description: ""\n\n';
+        }
+
+        if (prompts.length > 0) {
+          yaml += "prompts:\n";
+          prompts.forEach((prompt) => {
+            yaml += `  - ${prompt}\n`;
+          });
+          yaml += "\n";
+        } else {
+          yaml += "prompts:\n  - \n\n";
+        }
+
+        if (testBlocks.length > 0) {
+          yaml += "tests:\n";
+          testBlocks.forEach((test) => {
+            yaml += "  - vars:\n";
+            for (const [key, value] of Object.entries(test.vars)) {
+              yaml += `      ${key}: "${value}"\n`;
+            }
+            if (test.asserts.length > 0) {
+              yaml += "    assert:\n";
+              test.asserts.forEach((assert) => {
+                yaml += `      - type: ${assert.type}\n`;
+                yaml += `        value: ${assert.value}\n`;
+              });
+            }
+          });
+        } else {
+          yaml += "tests:\n  - vars:\n";
+        }
+
+        document.getElementById("output").value = yaml;
+      }
+
+      // Copy to clipboard
+      function copyToClipboard() {
+        const output = document.getElementById("output");
+        output.select();
+        document.execCommand("copy");
+        alert("Output copied to clipboard!");
+      }
+
+      // Export to file
+      function exportToFile() {
+        const content = document.getElementById("output").value;
+        const blob = new Blob([content], { type: "text/yaml" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "prompt-config.yaml";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      }
+
+      // Save configuration to localStorage
+      function saveConfig() {
+        const config = {
+          description: document.getElementById("description").value,
+          prompts: Array.from(document.querySelectorAll(".prompt-input")).map(
+            (input) => input.value
+          ),
+          testBlocks: [],
+        };
+
+        document.querySelectorAll(".test-block").forEach((block) => {
+          const vars = [];
+          block.querySelectorAll(".vars-table tbody tr").forEach((row) => {
+            const nameInput = row.querySelector(".var-name");
+            const valueInput = row.querySelector(".var-value");
+            if (nameInput && valueInput) {
+              vars.push({
+                name: nameInput.value,
+                value: valueInput.value,
+              });
+            }
+          });
+
+          const asserts = [];
+          block.querySelectorAll(".assert-item").forEach((item) => {
+            const typeSelect = item.querySelector(".assert-type");
+            const valueInput = item.querySelector(".assert-value");
+            if (typeSelect && valueInput) {
+              asserts.push({
+                type: typeSelect.value,
+                value: valueInput.value,
+              });
+            }
+          });
+
+          config.testBlocks.push({ vars, asserts });
+        });
+
+        localStorage.setItem("promptConfig", JSON.stringify(config));
+        alert("Configuration saved!");
+      }
+
+      // Load configuration from localStorage
+      function loadConfig() {
+        const config = JSON.parse(localStorage.getItem("promptConfig"));
+        if (config) {
+          document.getElementById("description").value =
+            config.description || "";
+
+          // Load prompts
+          const promptsContainer = document.getElementById("prompts-container");
+          promptsContainer.innerHTML = "";
+          config.prompts.forEach((prompt, index) => {
+            const textarea = document.createElement("textarea");
+            textarea.className = "prompt-input";
+            textarea.placeholder = "Enter prompt";
+            textarea.value = prompt;
+            promptsContainer.appendChild(textarea);
+          });
+          const buttonDiv = document.createElement("div");
+          buttonDiv.style.marginTop = "10px";
+          buttonDiv.innerHTML =
+            '<button onclick="addPrompt()">+ Add Another Prompt</button>';
+          promptsContainer.appendChild(buttonDiv);
+
+          // Load test blocks
+          const testsContainer = document.getElementById("tests-container");
+          testsContainer.innerHTML = "";
+          config.testBlocks.forEach((testBlock) => {
+            addTestBlock();
+            const newBlock = testsContainer.lastElementChild;
+
+            // Load vars
+            const tbody = newBlock.querySelector(".vars-table tbody");
+            tbody.innerHTML = "";
+            testBlock.vars.forEach((varItem, index) => {
+              const row = document.createElement("tr");
+              row.innerHTML = `
+                            <td><input type="text" class="var-name" placeholder="Variable name" value="${
+                              varItem.name || ""
+                            }"></td>
+                            <td><input type="text" class="var-value" placeholder="Variable value" value="${
+                              varItem.value || ""
+                            }"></td>
+                            <td><button onclick="removeVar(this)">X</button></td>
+                        `;
+              tbody.appendChild(row);
+            });
+
+            // Load asserts
+            const assertItems = newBlock.querySelector(".assert-items");
+            assertItems.innerHTML = "";
+            testBlock.asserts.forEach((assertItem, index) => {
+              const assertDiv = document.createElement("div");
+              assertDiv.className = "assert-item";
+              assertDiv.innerHTML = `
+                            <select class="assert-type">
+                                <option value="contains" ${
+                                  assertItem.type === "contains"
+                                    ? "selected"
+                                    : ""
+                                }>contains</option>
+                                <option value="javascript" ${
+                                  assertItem.type === "javascript"
+                                    ? "selected"
+                                    : ""
+                                }>javascript</option>
+                                <option value="llm-rubric" ${
+                                  assertItem.type === "llm-rubric"
+                                    ? "selected"
+                                    : ""
+                                }>llm-rubric</option>
+                                <option value="equals" ${
+                                  assertItem.type === "equals" ? "selected" : ""
+                                }>equals</option>
+                                <option value="regex" ${
+                                  assertItem.type === "regex" ? "selected" : ""
+                                }>regex</option>
+                            </select>
+                            <textarea class="assert-value" placeholder="Enter assert value">${
+                              assertItem.value || ""
+                            }</textarea>
+                            <div style="margin-top: 5px;">
+                                <button onclick="removeAssert(this)" style="background-color: #cc0000; border-color: #990000;">Remove Assert</button>
+                            </div>
+                        `;
+              assertItems.appendChild(assertDiv);
+            });
+          });
+
+          alert("Configuration loaded!");
+        } else {
+          alert("No saved configuration found!");
+        }
+      }
+
+      // Reset form
+      function resetForm() {
+        if (confirm("Are you sure you want to reset the form?")) {
+          document.getElementById("description").value = "";
+          document.getElementById("prompts-container").innerHTML = `
+                    <textarea class="prompt-input" placeholder="Enter prompt"></textarea>
+                    <div style="margin-top: 10px;">
+                        <button onclick="addPrompt()">+ Add Another Prompt</button>
+                    </div>
+                `;
+          document.getElementById("tests-container").innerHTML = "";
+          document.getElementById("output").value = "";
+        }
+      }
+
+      // Initialize with one test block and sample data
+      window.onload = function () {
+        addTestBlock();
+        generateOutput();
+      };
+    </script>
+  </body>
+</html>
