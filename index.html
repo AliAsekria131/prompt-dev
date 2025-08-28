@@ -88,6 +88,9 @@
 
       .section-content {
         padding: 10px;
+        display: flex;
+       flex-wrap: wrap;
+       gap: 10px;
       }
 
       table {
@@ -336,19 +339,6 @@
                 <div class="assert-section">
                     <div class="assert-header">Assert</div>
                     <div class="assert-items">
-                        <div class="assert-item">
-                            <select class="assert-type">
-                                <option value="contains">contains</option>
-                                <option value="javascript">javascript</option>
-                                <option value="llm-rubric">llm-rubric</option>
-                                <option value="equals">equals</option>
-                                <option value="regex">regex</option>
-                            </select>
-                            <textarea class="assert-value" placeholder="Enter assert value"></textarea>
-                            <div style="margin-top: 5px;">
-                                <button onclick="removeAssert(this)" style="background-color: #cc0000; border-color: #990000;">Remove Assert</button>
-                            </div>
-                        </div>
                     </div>
                     <div style="margin-top: 10px;">
                         <button onclick="addAssertToTest(this)">+ Add Assert</button>
